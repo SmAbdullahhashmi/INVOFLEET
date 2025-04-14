@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>INVOFLEET Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            border-radius: 1rem;
+        }
+        .welcome-box {
+            background-color: #ffffffcc;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="welcome-box text-center shadow mb-5">
+            <h1 class="display-5 fw-bold text-primary">Welcome, {{ user.username }} 👋</h1>
+            <p class="lead mb-3">
+                {% if user.is_staff %}
+                    You have administrative access to manage the system.
+                {% else %}
+                    You can submit your timesheet and view your reports.
+                {% endif %}
+            </p>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Logout</a>
+        </div>
+
+        {% if user.is_staff %}
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <h5 class="card-title mb-3">🔧 Django Admin</h5>
+                    <a href="/admin/" class="btn btn-dark">Open Admin Panel</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
