@@ -12,21 +12,22 @@ from .models import (
 # -----------------------------
 # Custom AdminSite
 # -----------------------------
-class CustomAdminSite(AdminSite):
+class CustomAdminSite(admin.AdminSite):
     site_header = "INVOFLEET Admin Panel"
     site_title = "INVOFLEET Admin"
     index_title = "Welcome to INVOFLEET Admin Dashboard"
 
-    def get_app_list(self, request):
-        app_list = super().get_app_list(request)
-        # Sorting model order manually
-        model_order = [
-            'CustomUser', 'Region', 'Country', 'CostCentre', 'LocationCostCentre',
-            'StaffingCategory', 'StaffProfile', 'StaffDetails', 'AttendanceType',
-            'LTA', 'Rate', 'TimesheetEntry', 'User', 'Group'
+    def get_app_list(self, request, app_label=None):  # ✅ Fixed here
+        app_list = super().get_app_list(request, app_label)
+        order = [
+            'CustomUser', 'Region', 'Country', 'CostCentre',
+            'LocationCostCentre', 'StaffingCategory', 'StaffProfile',
+            'StaffDetails', 'AttendanceType', 'LTA', 'Rate', 'TimesheetEntry'
         ]
         for app in app_list:
-            app['models'].sort(key=lambda x: model_order.index(x['object_name']) if x['object_name'] in model_order else 999)
+            app['models'].sort(
+                key=lambda x: order.index(x['object_name']) if x['object_name'] in order else 999
+            )
         return app_list
 
 admin_site = CustomAdminSite(name='myadmin')
