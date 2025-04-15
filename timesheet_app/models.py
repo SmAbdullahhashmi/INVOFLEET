@@ -93,19 +93,24 @@ class StaffProfile(models.Model):
 # -----------------------------
 
 class StaffDetails(models.Model):
-    staff_id = models.CharField(max_length=20, primary_key=True)
+    staff_id = models.AutoField(primary_key=True)
     staff_name = models.CharField(max_length=100)
     staff_contact_address = models.TextField()
     staff_mobile = models.CharField(max_length=20)
-    profile = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
+    profile = models.ForeignKey('StaffProfile', on_delete=models.CASCADE)
     profile_desc = models.CharField(max_length=100)
-    location_costcentre = models.ForeignKey(LocationCostCentre, on_delete=models.CASCADE)
-    costcenter = models.ForeignKey(CostCentre, on_delete=models.CASCADE)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    location_costcentre = models.ForeignKey('LocationCostCentre', on_delete=models.CASCADE)
+    costcenter = models.ForeignKey('CostCentre', on_delete=models.CASCADE)
+    country = models.ForeignKey('Country', on_delete=models.CASCADE)
+    region = models.ForeignKey('Region', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.staff_id} - {self.staff_name}"
+        return self.staff_name
+
+    class Meta:
+        verbose_name = "Staff detail"
+        verbose_name_plural = "Staff details"  # ✅ This prevents "Staff detailss"
+
 
 # -----------------------------
 # ATTENDANCE TYPE
