@@ -145,15 +145,19 @@ class LTA(models.Model):
 class Rate(models.Model):
     profile = models.ForeignKey(StaffProfile, on_delete=models.CASCADE)
     profile_desc = models.CharField(max_length=100)
-    wage_rate_per_day = models.DecimalField(max_digits=10, decimal_places=2)
-    overnight_rate_per_day = models.DecimalField(max_digits=10, decimal_places=2)
-    overtime_rate_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
-    int_dsa_per_day = models.DecimalField(max_digits=10, decimal_places=2)
-    allowance_presidential_per_day = models.DecimalField(max_digits=10, decimal_places=2)
-    lta_number = models.CharField(max_length=100)
-    lta_type = models.CharField(max_length=100)
-    supplier_type = models.CharField(max_length=100)
-    supplier_desc = models.CharField(max_length=255)
+    wage_rate_per_day = models.CharField(max_length=100)  # Changed to CharField for text like "SDG 23000"
+    overnight_rate_per_day = models.CharField(max_length=100)
+    overtime_rate_per_hour = models.CharField(max_length=100)
+    int_dsa_per_day = models.CharField(max_length=100)
+    allowance_presidential_per_day = models.CharField(max_length=100)
+
+    lta = models.ForeignKey(LTA, on_delete=models.CASCADE, null=True, blank=True)
+  # ✅ link to LTA table
+    cra = models.CharField(max_length=100, null=True, blank=True)  # ✅ new field for CRA
+
+    def __str__(self):
+        return f"Rates for {self.profile_desc}"
+
 
     def __str__(self):
         return f"Rates for {self.profile_desc}"

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.admin import AdminSite
-from import_export.admin import ExportMixin
+from import_export.admin import ImportExportModelAdmin
 from import_export import resources
 
 from .models import (
@@ -14,7 +14,7 @@ from .models import (
 # -----------------------------
 # Custom AdminSite
 # -----------------------------
-class CustomAdminSite(admin.AdminSite):
+class CustomAdminSite(AdminSite):
     site_header = "INVOFLEET Admin Panel"
     site_title = "INVOFLEET Admin"
     index_title = "Welcome to INVOFLEET Admin Dashboard"
@@ -40,30 +40,37 @@ admin_site = CustomAdminSite(name='myadmin')
 class CustomUserResource(resources.ModelResource):
     class Meta:
         model = CustomUser
+        import_id_fields = ['user_id']
 
 class RegionResource(resources.ModelResource):
     class Meta:
         model = Region
+        import_id_fields = ['region_id']
 
 class CountryResource(resources.ModelResource):
     class Meta:
         model = Country
+        import_id_fields = ['country_id']
 
 class CostCentreResource(resources.ModelResource):
     class Meta:
         model = CostCentre
+        import_id_fields = ['costcenter_id']
 
 class LocationCostCentreResource(resources.ModelResource):
     class Meta:
         model = LocationCostCentre
+        import_id_fields = ['location_costcentre_id']
 
 class StaffingCategoryResource(resources.ModelResource):
     class Meta:
         model = StaffingCategory
+        import_id_fields = ['staffing_category_id']
 
 class StaffProfileResource(resources.ModelResource):
     class Meta:
         model = StaffProfile
+        import_id_fields = ['profile_id']
 
 class StaffDetailsResource(resources.ModelResource):
     class Meta:
@@ -72,10 +79,12 @@ class StaffDetailsResource(resources.ModelResource):
 class AttendanceTypeResource(resources.ModelResource):
     class Meta:
         model = AttendanceType
+        import_id_fields = ['attendence_id']
 
 class LTAResource(resources.ModelResource):
     class Meta:
         model = LTA
+        import_id_fields = ['lta_number']
 
 class RateResource(resources.ModelResource):
     class Meta:
@@ -86,55 +95,67 @@ class TimesheetEntryResource(resources.ModelResource):
         model = TimesheetEntry
 
 # -----------------------------
-# Admin Configs with Export
+# Admin Configs with Import/Export and Filters
 # -----------------------------
-class CustomUserAdmin(ExportMixin, admin.ModelAdmin):
+class CustomUserAdmin(ImportExportModelAdmin):
     resource_class = CustomUserResource
-    list_display = ('user_id', 'username', 'access_level', 'location', 'region')
+    list_display = [field.name for field in CustomUser._meta.fields]
+    list_filter = [field.name for field in CustomUser._meta.fields if field.name != 'id']
 
-class RegionAdmin(ExportMixin, admin.ModelAdmin):
+class RegionAdmin(ImportExportModelAdmin):
     resource_class = RegionResource
-    list_display = ('region_id', 'region_desc')
+    list_display = [field.name for field in Region._meta.fields]
+    list_filter = [field.name for field in Region._meta.fields if field.name != 'id']
 
-class CountryAdmin(ExportMixin, admin.ModelAdmin):
+class CountryAdmin(ImportExportModelAdmin):
     resource_class = CountryResource
-    list_display = ('country_id', 'country_desc', 'region')
+    list_display = [field.name for field in Country._meta.fields]
+    list_filter = [field.name for field in Country._meta.fields if field.name != 'id']
 
-class CostCentreAdmin(ExportMixin, admin.ModelAdmin):
+class CostCentreAdmin(ImportExportModelAdmin):
     resource_class = CostCentreResource
-    list_display = ('costcenter_id', 'costcenter_desc', 'country', 'region')
+    list_display = [field.name for field in CostCentre._meta.fields]
+    list_filter = [field.name for field in CostCentre._meta.fields if field.name != 'id']
 
-class LocationCostCentreAdmin(ExportMixin, admin.ModelAdmin):
+class LocationCostCentreAdmin(ImportExportModelAdmin):
     resource_class = LocationCostCentreResource
-    list_display = ('location_costcentre_id', 'location_costcentre_desc', 'costcenter', 'country', 'region')
+    list_display = [field.name for field in LocationCostCentre._meta.fields]
+    list_filter = [field.name for field in LocationCostCentre._meta.fields if field.name != 'id']
 
-class StaffingCategoryAdmin(ExportMixin, admin.ModelAdmin):
+class StaffingCategoryAdmin(ImportExportModelAdmin):
     resource_class = StaffingCategoryResource
-    list_display = ('staffing_category_id', 'staffing_category_desc')
+    list_display = [field.name for field in StaffingCategory._meta.fields]
+    list_filter = [field.name for field in StaffingCategory._meta.fields if field.name != 'id']
 
-class StaffProfileAdmin(ExportMixin, admin.ModelAdmin):
+class StaffProfileAdmin(ImportExportModelAdmin):
     resource_class = StaffProfileResource
-    list_display = ('profile_id', 'profile_desc')
+    list_display = [field.name for field in StaffProfile._meta.fields]
+    list_filter = [field.name for field in StaffProfile._meta.fields if field.name != 'id']
 
-class StaffDetailsAdmin(ExportMixin, admin.ModelAdmin):
+class StaffDetailsAdmin(ImportExportModelAdmin):
     resource_class = StaffDetailsResource
-    list_display = ('staff_id', 'staff_name', 'profile', 'region', 'country')
+    list_display = [field.name for field in StaffDetails._meta.fields]
+    list_filter = [field.name for field in StaffDetails._meta.fields if field.name != 'id']
 
-class AttendanceTypeAdmin(ExportMixin, admin.ModelAdmin):
+class AttendanceTypeAdmin(ImportExportModelAdmin):
     resource_class = AttendanceTypeResource
-    list_display = ('attendence_id', 'attendence_desc')
+    list_display = [field.name for field in AttendanceType._meta.fields]
+    list_filter = [field.name for field in AttendanceType._meta.fields if field.name != 'id']
 
-class LTAAdmin(ExportMixin, admin.ModelAdmin):
+class LTAAdmin(ImportExportModelAdmin):
     resource_class = LTAResource
-    list_display = ('lta_number', 'lta_type', 'supplier_type', 'lta_start_date', 'lta_end_date')
+    list_display = [field.name for field in LTA._meta.fields]
+    list_filter = [field.name for field in LTA._meta.fields if field.name != 'id']
 
-class RateAdmin(ExportMixin, admin.ModelAdmin):
+class RateAdmin(ImportExportModelAdmin):
     resource_class = RateResource
-    list_display = ('id', 'profile', 'profile_desc', 'wage_rate_per_day', 'overnight_rate_per_day')
+    list_display = [field.name for field in Rate._meta.fields]
+    list_filter = [field.name for field in Rate._meta.fields if field.name != 'id']
 
-class TimesheetEntryAdmin(ExportMixin, admin.ModelAdmin):
+class TimesheetEntryAdmin(ImportExportModelAdmin):
     resource_class = TimesheetEntryResource
-    list_display = ('id', 'staff', 'date', 'present', 'time_in', 'time_out', 'overnight', 'cra')
+    list_display = [field.name for field in TimesheetEntry._meta.fields]
+    list_filter = [field.name for field in TimesheetEntry._meta.fields if field.name != 'id']
 
 # -----------------------------
 # Register all models
@@ -151,6 +172,5 @@ admin_site.register(AttendanceType, AttendanceTypeAdmin)
 admin_site.register(LTA, LTAAdmin)
 admin_site.register(Rate, RateAdmin)
 admin_site.register(TimesheetEntry, TimesheetEntryAdmin)
-
 admin_site.register(User, UserAdmin)
 admin_site.register(Group, GroupAdmin)
